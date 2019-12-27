@@ -1,26 +1,115 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { Component } from 'react';
+import FlexView from 'react-flexview';
+import Dropdown from './Dropdown/Dropdown';
+import Switch from './Switch/Switch';
+import CustomSlider from './CustomSlider/CustomSlider';
 import './App.css';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+const clientId = Date.now();
+console.log('me = ' + clientId);
+
+class App extends Component {
+
+  constructor() {
+    super();
+
+    // this.clientId = Date.now();
+
+    this.state = {
+      isRunning: true,
+      route: 'main',
+      temperature1: 20,
+      temperature2: 20,
+      isListening: false,
+      senderId: clientId,
+      // buttonPressed: false,
+    };
+
+    this.server = 'http://192.168.1.90:4000';
+    this.eventSource = new EventSource(new URL('/events', this.server));
+    console.log('eventSource.withCredentials: ' + this.eventSource.withCredentials);
+    console.log('eventSource.readyState: ' + this.eventSource.readyState);
+    console.log('eventSource.url: ' + this.eventSource.url);
+    // console.log(this.eventSource);
+  }
+  // const [isRunning, setIsRunning] = useState(true);
+  // const [route, setRoute] = useState('main');
+  // const [temperature1, setTemperature1] = useState(20);
+  // const [temperature2, setTemperature2] = useState(20);
+
+  componentDidMount() {
+    // https://alligator.io/nodejs/server-sent-events-build-realtime-app/
+    if (!this.state.isListening) {
+      this.eventSource.onopen = (event) => {
+        console.log("Connection to server opened.");
+        console.log('eventSource.readyState: ' + event.target.readyState);
+      };
+
+      this.eventSource.onmessage = (event) => {
+        console.log('message received');
+        console.log(event);
+        const parsedData = JSON.parse(event.data);
+        console.log('state from event');
+        console.log(parsedData);
+        console.log('me: ' + clientId + '; senderId: ' + parsedData.senderId);
+        if(parsedData.senderId!==clientId) {
+          console.log(' --> update status');
+          this.setState(parsedData);
+        }
+      };
+      this.setState({ isListening: true });
+    }
+
+    this.eventSource.onerror = () => {
+      console.log("EventSource failed.");
+    };
+
+    // fetch(new URL('/state', this.server))
+    //   .then(response => response.json())
+    //   .then(serverState => {
+    //     // console.log('serverState:');
+    //     // console.log(serverState);
+    //     this.setState(serverState);
+    //     console.log('componentDidMount: state updated from server');
+    //     // console.log('local state:');
+    //     // console.log(this.state);
+    //   });
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    console.log('componentDidUpdate');
+    // console.log(this.state);
+    // console.log(prevState);
+    if (this.state.route !== prevState.route
+      || this.state.isRunning !== prevState.isRunning
+      || this.state.temperature1 !== prevState.temperature1
+      || this.state.temperature2 !== prevState.temperature2) {
+      console.log('pushing new state to server');
+      fetch(new URL('/state', this.server), {
+        method: 'post',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(this.state)
+      });
+      // .then(response => response.json())
+      // .then(console.log);
+    }
+  }
+
+  render() {
+    return (
+      <FlexView column vAlignContent='center' hAlignContent='center' height='100vh' width='100vw'>
+        <Dropdown onChange={(x) => this.setState({ route: x, senderId: clientId })} value={this.state.route} label='Route' values={["main", "hack", "countdown", "temperature", "code", "win"]} />
+        <FlexView height='50px' />
+        <Switch onChange={(x) => this.setState({ isRunning: x, senderId: clientId  })} value={this.state.isRunning} label='Running' />
+        <FlexView height='50px' />
+        {/* <CustomSlider onChange={(x) => this.setState({ temperature1: x, senderId: clientId  })} value={this.state.temperature1} label='Temperature Left' /> */}
+        <Dropdown onChange={(x) => this.setState({ temperature1: x, senderId: clientId })} value={this.state.temperature1} label='Temperature Left' values={[22,24,26,28,30]} />
+        <FlexView height='50px' />
+        {/* <CustomSlider onChange={(x) => this.setState({ temperature2: x, senderId: clientId  })} value={this.state.temperature2} label='Temperature Right' /> */}
+        <Dropdown onChange={(x) => this.setState({ temperature2: x, senderId: clientId })} value={this.state.temperature2} label='Temperature Right' values={[22,24,26,28,30]} />
+      </FlexView>
+    );
+  }
 }
 
 export default App;
