@@ -10,13 +10,10 @@ function Dropdown(props) {
         <FlexView>
             <label htmlFor={props.label}>{props.label}</label>
 
-            <select name={props.label} id={props.label} value={props.value} onChange={(event) => props.onChange(event.target.value)}>
-                {/* <option value="main">main</option>
-                <option value="hack">hack</option>
-                <option value="countdown">countdown</option>
-                <option value="temperature">temperature</option>
-                <option value="code">code</option>
-                <option value="win">win</option> */}
+            <select name={props.label} id={props.label} value={props.value} onChange={(event) => {
+                console.log(props.label + ' updated to ' + event.target.value);
+                props.onChange(event.target.value);
+                }}>
                 {props.values.map((value, index) => <option key={value} value={value}>{value}</option>)}
             </select>
         </FlexView>

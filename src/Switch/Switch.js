@@ -11,7 +11,10 @@ const Switch = (props) => {
         <Toggle
           id={props.label}
           checked={props.value}
-          onChange={(event) => props.onChange(event.target.checked)} />
+          onChange={(event) => {
+            console.log(props.label + ' updated to ' + event.target.checked);
+            props.onChange(event.target.checked);
+            }} />
       </FlexView>
     );
 };

@@ -14,7 +14,10 @@ function CustomSlider(props) {
                 xmin={20}
                 xstep={1}
                 x={props.value}
-                onChange={({x})=>props.onChange(x)}
+                onChange={({x})=>{
+                    console.log(props.label + ' updated to ' + x);
+                    props.onChange(x);
+                }}
             />
         </FlexView>
     );
