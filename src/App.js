@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import FlexView from 'react-flexview';
 import Dropdown from './Dropdown/Dropdown';
 import Switch from './Switch/Switch';
-import CustomSlider from './CustomSlider/CustomSlider';
+// import CustomSlider from './CustomSlider/CustomSlider';
 import './App.css';
 
 const clientId = Date.now();
