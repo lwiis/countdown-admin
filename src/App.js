@@ -6,7 +6,7 @@ import Switch from './Switch/Switch';
 import './App.css';
 
 const clientId = Date.now();
-const server = 'http://localhost:4000';
+const server = 'http://10.10.10.203:4000';
 
 console.log('me = ' + clientId);
 
