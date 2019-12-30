@@ -6,6 +6,8 @@ import Switch from './Switch/Switch';
 import './App.css';
 
 const clientId = Date.now();
+const server = 'http://localhost:4000';
+
 console.log('me = ' + clientId);
 
 class App extends Component {
@@ -22,8 +24,7 @@ class App extends Component {
       senderId: clientId,
     };
 
-    this.server = 'http://192.168.1.90:4000';
-    this.eventSource = new EventSource(new URL('/events', this.server));
+    this.eventSource = new EventSource(new URL('/events', server));
     // console.log('eventSource.withCredentials: ' + this.eventSource.withCredentials);
     // console.log('eventSource.readyState: ' + this.eventSource.readyState);
     // console.log('eventSource.url: ' + this.eventSource.url);
@@ -66,7 +67,7 @@ class App extends Component {
       || this.state.temperature1 !== prevState.temperature1
       || this.state.temperature2 !== prevState.temperature2) {
       // console.log('pushing new state to server');
-      fetch(new URL('/state', this.server), {
+      fetch(new URL('/state', server), {
         method: 'post',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(this.state)
