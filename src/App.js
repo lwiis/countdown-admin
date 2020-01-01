@@ -6,7 +6,7 @@ import Switch from './Switch/Switch';
 import './App.css';
 
 const clientId = Date.now();
-const server = 'http://10.10.10.203:4000';
+const server = 'http://10.10.10.79:4000';
 
 console.log('me = ' + clientId);
 
@@ -83,10 +83,10 @@ class App extends Component {
         <Switch onChange={(x) => this.setState({ isRunning: x, senderId: clientId  })} value={this.state.isRunning} label='Running' />
         <FlexView height='50px' />
         {/* <CustomSlider onChange={(x) => this.setState({ temperature1: x, senderId: clientId  })} value={this.state.temperature1} label='Temperature Left' /> */}
-        <Dropdown onChange={(x) => this.setState({ temperature1: x, senderId: clientId })} value={this.state.temperature1} label='Temperature Left' values={[20,22,24,26,28,30]} />
+        <Dropdown onChange={(x) => this.setState({ temperature1: x, senderId: clientId })} value={this.state.temperature1} label='Temperature Left' values={[20,22,24,26,28,30,32]} />
         <FlexView height='50px' />
         {/* <CustomSlider onChange={(x) => this.setState({ temperature2: x, senderId: clientId  })} value={this.state.temperature2} label='Temperature Right' /> */}
-        <Dropdown onChange={(x) => this.setState({ temperature2: x, senderId: clientId })} value={this.state.temperature2} label='Temperature Right' values={[20,22,24,26,28,30]} />
+        <Dropdown onChange={(x) => this.setState({ temperature2: x, senderId: clientId })} value={this.state.temperature2} label='Temperature Right' values={[20,22,24,26,28,30,32]} />
       </FlexView>
     );
   }
